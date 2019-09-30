@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Transolid</title>
+  <style media="screen">
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #container {
+      position: relative;
+      width: 240px;
+      height: 240px;
+    }
+
+    #foreground,
+    #background {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    #foreground {
+      top: 0;
+      left: 0;
+    }
+
+    #background {
+      right: 0;
+      bottom: 0;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div id="container">
+    <div id="background"></div>
+    <div id="foreground"></div>
+  </div>
+  <p id="result"></p>
+  <form onsubmit="onFormSubmit(event)">
+    <input type="text" name="foreground" onkeyup="onValueChange()">
+    <input type="number" name="alpha" min="0" max="100" onkeyup="onValueChange()">
+    <input type="text" name="background" onkeyup="onValueChange()">
+  </form>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js"></script>
+  <script type="text/javascript">
+    var foregroundEl = document.getElementById('foreground');
+    var backgroundEl = document.getElementById('background');
+    var resultEl = document.getElementById('result');
+    var foregroundInput = document.getElementsByName('foreground')[0];
+    var alphaInput = document.getElementsByName('alpha')[0];
+    var backgroundInput = document.getElementsByName('background')[0];
+
+    function computeSolidColor(foregroundString, alpha, backgroundString) {
+      var foreground = tinycolor(foregroundString);
+      var background = tinycolor(backgroundString);
+
+      foregroundEl.style.backgroundColor = foreground.clone().setAlpha(alpha / 100).toString();
+      backgroundEl.style.backgroundColor = background.toString();
+
+      resultEl.innerHTML = tinycolor.mix(background, foreground, alpha).toHexString();
+    }
+
+    function onValueChange() {
+      var foreground = foregroundInput.value;
+      var alpha = parseFloat(alphaInput.value);
+      var background = backgroundInput.value;
+
+      computeSolidColor(foreground, alpha, background);
+    }
+
+    function onFormSubmit(event) {
+      event.preventDefault();
+    }
+
+    foregroundInput.value = tinycolor.random().toHexString();
+    alphaInput.value = 50;
+    backgroundInput.value = tinycolor.random().toHexString();
+
+    onValueChange()
+
+  </script>
+</body>
+
+</html>
